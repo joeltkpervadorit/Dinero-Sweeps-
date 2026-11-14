@@ -84,7 +84,8 @@ export function initMotion() {
 
       /* ---- hero: lines rise on load, then the scene deepens as you leave ---- */
       gsap.from('.hx-t .ln>i', { yPercent: 115, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.15 });
-      gsap.from('.hx-c > .kick, .hx-s, .hx-bn, .hx-cta, .hx-18', { y: 22, opacity: 0, duration: 0.8, ease: E, stagger: 0.07, delay: 0.5 });
+      // fromTo + clearProps: immune to a rebuild landing mid-tween and to the CSS transform transitions on .hx-bn/.btn
+      gsap.fromTo('.hx-c > .kick, .hx-s, .hx-bn, .hx-cta, .hx-18', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: E, stagger: 0.07, delay: 0.5, clearProps: 'transform,opacity' });
       gsap.from('.hx-art img', { scale: 1.18, duration: 1.8, ease: 'power2.out' });
       var hs = { trigger: '.hx', start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('.hx-art img', { yPercent: 14, ease: 'none', scrollTrigger: hs });
@@ -138,6 +139,9 @@ export function initMotion() {
         cleanups.push(function () { if (lit) lit.classList.remove('on'); lit = null; });
       } else gsap.fromTo('.rl', { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: E, stagger: 0.05, clearProps: 'transform,opacity', scrollTrigger: { trigger: '.roll', start: 'top 80%', once: true } });
 
+      /* ---- quick actions (phones): pop in after the hero ---- */
+      if (!desk) gsap.fromTo('.qa-b', { y: 24, scale: 0.85, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.8)', stagger: 0.07, delay: 0.85, clearProps: 'transform,opacity' });
+
       /* ---- games: the lobby grid deals in row by row; tabs re-deal the visible cards ---- */
       var glg = $('.glg')[0];
       if (glg) {
@@ -164,7 +168,7 @@ export function initMotion() {
       $('.pm').forEach(function (p) {
         gsap.fromTo(p, { clipPath: 'inset(8% 10% 8% 10% round 36px)' }, { clipPath: 'inset(0% 0% 0% 0% round 36px)', ease: 'none', scrollTrigger: { trigger: p, start: 'top 95%', end: 'top 35%', scrub: 0.5 } });
         gsap.fromTo($('.art', p), { yPercent: 8, scale: 1.12 }, { yPercent: -6, scale: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top bottom', end: 'bottom top', scrub: 0.6 } });
-        gsap.from($('.pm-tx > *', p), { y: 30, opacity: 0, duration: 0.8, ease: E, stagger: 0.08, scrollTrigger: { trigger: $('.pm-tx', p)[0], start: 'top 86%', once: true } });
+        gsap.fromTo($('.pm-tx > *', p), { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: E, stagger: 0.08, clearProps: 'transform,opacity', scrollTrigger: { trigger: $('.pm-tx', p)[0], start: 'top 86%', once: true } });
       });
 
       /* ---- how: the line draws itself, each move lands ---- */
@@ -174,7 +178,7 @@ export function initMotion() {
         tl.from($('.stn', s), { scale: 0, duration: 0.5, ease: 'back.out(2.5)' })
           .from($('.st-big', s), { xPercent: -30, opacity: 0, duration: 0.8, ease: E }, 0.05)
           .from($('.st-im', s), { scale: 0.6, rotation: 10, opacity: 0, duration: 0.9, ease: 'back.out(1.6)' }, 0.1)
-          .from($('.h3, .stu li, .btn', s), { y: 20, opacity: 0, duration: 0.6, ease: E, stagger: 0.06 }, 0.25);
+          .fromTo($('.h3, .stu li, .btn', s), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: E, stagger: 0.06, clearProps: 'transform,opacity' }, 0.25);
       });
 
       /* ---- three doors swing open ---- */

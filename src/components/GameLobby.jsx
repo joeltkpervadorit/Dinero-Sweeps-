@@ -1,6 +1,6 @@
 export default function GameLobby() {
   return (
-    <section className="gms" aria-label="Games">
+    <section className="gms" id="lobby" aria-label="Games">
       <i className="bulbs" aria-hidden="true" />
       <div className="wrap sh">
         <span className="kick">Pick your game</span>

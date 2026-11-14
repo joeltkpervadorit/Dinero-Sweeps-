@@ -1,3 +1,5 @@
+import QuickActions from './QuickActions.jsx';
+
 export default function Hero() {
   return (
     <div className="top">
@@ -18,6 +20,7 @@ export default function Hero() {
           <p className="hx-18"><img src="/media/badge-18plus.webp" alt="" /><span>18+ only. No purchase necessary. Void where prohibited. Verify your account to redeem.</span></p>
         </div>
       </section>
+      <QuickActions />
       <label className="wbo" htmlFor="wbx" aria-hidden="true" />
       <div className="wb" role="dialog" aria-label="Welcome Bonus">
         <label className="wbc" htmlFor="wbx" aria-label="Close"><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x" /></svg></label>
