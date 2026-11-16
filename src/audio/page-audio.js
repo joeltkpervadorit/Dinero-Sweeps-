@@ -367,14 +367,33 @@ export function createPageAudio() {
   }
 
   // Rub-the-lamp: a rising bell per rub step, then a magic arpeggio when the wish is granted.
+  // A short brassy "rub" swish (band-passed noise sweep) for the lamp.
+  function swish(t, from, to, vol, dur) {
+    const s = ac.createBufferSource();
+    s.buffer = noiseBuf;
+    const f = ac.createBiquadFilter();
+    f.type = 'bandpass';
+    f.Q.value = 4;
+    f.frequency.setValueAtTime(from, t);
+    f.frequency.exponentialRampToValueAtTime(to, t + dur);
+    const g = ac.createGain();
+    env(g, t, vol, 0.02, dur);
+    s.connect(f); f.connect(g); g.connect(fx); g.connect(wet);
+    s.start(t); s.stop(t + dur + 0.05);
+  }
   function rubChime(e) {
     if (!active()) return;
     const lvl = (e && e.detail && e.detail.level) || 1;
-    bell(SCALE[Math.min(SCALE.length - 1, 6 + lvl)] * 2, ac.currentTime, 0.1, fx);
+    const t = ac.currentTime;
+    swish(t, 900 + lvl * 150, 2600 + lvl * 300, 0.35, 0.28);
+    swish(t + 0.14, 2400 + lvl * 300, 1100, 0.25, 0.24);
+    bell(SCALE[Math.min(SCALE.length - 1, 6 + lvl)] * 2, t + 0.05, 0.12, fx);
+    bell(SCALE[Math.min(SCALE.length - 1, 8 + lvl)] * 2, t + 0.16, 0.08, fx);
   }
   function wishChime() {
     if (!active()) return;
     const t = ac.currentTime;
+    swish(t, 300, 5000, 0.5, 0.9); // magic whoosh as the smoke pours out
     for (let i = 0; i < 9; i++) bell(SCALE[Math.min(SCALE.length - 1, 4 + i)] * 2, t + i * 0.07, 0.12, fx);
     [0, 4, 7].forEach((k) => bell(SCALE[Math.min(SCALE.length - 1, 6 + k)], t + 0.7, 0.14, fx));
   }

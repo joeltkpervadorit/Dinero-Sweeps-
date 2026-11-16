@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-/* Magic lamp in the centre of the footer. One tap (or a quick rub) grants a wish: the lamp shakes,
-   puffs smoke and opens a bonus-code popup. Rubbing makes it glow brighter first. */
+/* Magic lamp in the centre of the footer. Each tap shakes it harder and makes it glow brighter (with a
+   rub sound); the 3rd tap (or a quick rub) grants the wish: smoke, a magic chime and a bonus-code popup. */
+const TAPS = 3;
 
 const BONUS_CODE = 'GENIEWISH'; // TODO: replace with the real promo code
 
@@ -37,8 +38,22 @@ export default function RubLamp() {
     const s = st.current;
     s.down = true; s.lastX = e.clientX; s.dir = 0;
   };
-  // A tap anywhere on the lamp grants the wish (or reopens it).
-  const onTap = () => { if (st.current.granted) setOpen(true); else grant(); };
+  // Each tap: a shake that grows stronger, more glow and a rub sound. The last tap grants the wish.
+  const onTap = () => {
+    const s = st.current;
+    if (s.granted) { setOpen(true); return; }
+    s.taps = (s.taps || 0) + 1;
+    s.power = Math.max(s.power, s.taps / TAPS);
+    setPower(s.power);
+    const k = s.taps; // shake strength
+    lampRef.current?.querySelector('img')?.animate(
+      [{ transform: 'rotate(0)' }, { transform: `rotate(${-8 * k}deg) scale(${1 + 0.04 * k})` },
+       { transform: `rotate(${7 * k}deg) scale(${1 + 0.04 * k})` }, { transform: `rotate(${-5 * k}deg)` },
+       { transform: `rotate(${3 * k}deg)` }, { transform: 'rotate(0)' }],
+      { duration: 420 + k * 60, easing: 'ease-out' });
+    window.dispatchEvent(new CustomEvent('ds:rub', { detail: { level: k * 2 } }));
+    if (s.taps >= TAPS) setTimeout(grant, 380);
+  };
   const onMove = (e) => {
     const s = st.current;
     if (!s.down || granted) return;
@@ -51,7 +66,7 @@ export default function RubLamp() {
     setPower(s.power);
     const step = Math.floor(s.power * 6);
     if (step > s.step) { s.step = step; window.dispatchEvent(new CustomEvent('ds:rub', { detail: { level: step } })); }
-    if (s.power >= 1 && s.flips >= 2) grant();
+    if (s.power >= 1 && s.flips >= 2) { s.taps = TAPS; grant(); }
   };
   const onUp = () => { st.current.down = false; st.current.step = Math.floor(st.current.power * 6); };
 
