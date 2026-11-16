@@ -345,10 +345,46 @@ export function createPageAudio() {
     return on && ac && ac.state === 'running' && !document.hidden;
   }
 
-  // Runs inside a user gesture: creates/resumes the context (iOS needs this) and starts the music.
+  /* iPhone: Web Audio plays in the "ambient" audio session, which the ring/silent switch mutes. Two fixes:
+   * navigator.audioSession (iOS 16.4+) asks for the "playback" session directly; on older iOS a silent looping
+   * <audio> element, started inside the gesture, switches the page to the playback session. */
+  let keepAlive = null;
+  function silentWav() {
+    const rate = 8000;
+    const n = rate / 2; // 0.5 s of 8-bit silence
+    const buf = new ArrayBuffer(44 + n);
+    const v = new DataView(buf);
+    const str = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+    str(36, 'data'); v.setUint32(40, n, true);
+    for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  }
+  function playbackSession() {
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* not supported */ }
+    if (!/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent) || !('ontouchend' in document)) return; // iOS only
+    try {
+      if (!keepAlive) {
+        keepAlive = document.createElement('audio');
+        keepAlive.setAttribute('x-webkit-airplay', 'deny');
+        keepAlive.preload = 'auto';
+        keepAlive.loop = true;
+        keepAlive.src = silentWav();
+      }
+      const p = keepAlive.play();
+      if (p) p.catch(() => {});
+    } catch (e) { /* ignore */ }
+  }
+
+  // Runs inside a user gesture (touchend/click/key): creates or resumes the context and starts the music.
+  // iOS only accepts resume() from a gesture that ends a tap, and the context may also be "interrupted"
+  // (after a call or a trip to the home screen), so every gesture retries until it is running.
   function unlock() {
     if (!on) return;
     try {
+      playbackSession();
       if (!ac && !build()) return;
       if (ac.state !== 'running') ac.resume().then(() => { if (on) startMusic(); }).catch(() => {});
       const b = ac.createBufferSource();
@@ -359,26 +395,33 @@ export function createPageAudio() {
     } catch (e) { /* no audio */ }
   }
 
+  // The chime plays on touch-down (feels instant); unlocking happens on the gesture events below.
   function onTap(e) {
-    unlock();
+    if (e.button > 0) return;
     if (!active()) return;
-    if (e.type === 'pointerdown' && e.button > 0) return;
     const now = performance.now();
     if (now - lastTap < 90) return;
     lastTap = now;
     try { tapChime(); } catch (err) { /* ignore */ }
   }
-  const onGesture = () => unlock();
+  const onGesture = () => {
+    if (on && (!ac || ac.state !== 'running' || !playing)) unlock();
+  };
 
   function onVisibility() {
     if (!ac) return;
-    if (document.hidden) ac.suspend().catch(() => {});
-    else if (on) ac.resume().catch(() => {});
+    if (document.hidden) {
+      ac.suspend().catch(() => {});
+      keepAlive?.pause();
+    } else if (on) {
+      ac.resume().catch(() => {});
+      if (keepAlive) keepAlive.play()?.catch(() => {});
+    }
   }
 
+  const GESTURES = ['pointerup', 'touchend', 'click', 'keydown'];
   window.addEventListener('pointerdown', onTap, { passive: true });
-  window.addEventListener('keydown', onGesture, { passive: true });
-  window.addEventListener('touchend', onGesture, { passive: true }); // iOS counts touchend as the gesture
+  GESTURES.forEach((t) => window.addEventListener(t, onGesture, { passive: true, capture: true }));
   window.addEventListener('scroll', onScroll, { passive: true });
   document.addEventListener('visibilitychange', onVisibility);
 
@@ -389,6 +432,7 @@ export function createPageAudio() {
       if (on) { if (fromGesture) unlock(); }
       else {
         stopMusic();
+        keepAlive?.pause();
         if (ac) wind.gain.gain.setTargetAtTime(0, ac.currentTime, 0.05);
       }
     },
@@ -396,8 +440,8 @@ export function createPageAudio() {
       stopMusic();
       clearTimeout(scrollStop);
       window.removeEventListener('pointerdown', onTap);
-      window.removeEventListener('keydown', onGesture);
-      window.removeEventListener('touchend', onGesture);
+      GESTURES.forEach((t) => window.removeEventListener(t, onGesture, { capture: true }));
+      if (keepAlive) { keepAlive.pause(); URL.revokeObjectURL(keepAlive.src); keepAlive = null; }
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVisibility);
       try { ac?.close(); } catch (e) { /* closed */ }

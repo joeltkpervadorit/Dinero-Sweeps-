@@ -109,7 +109,7 @@ export function initGenieSmoke(options) {
   }
 
   function tick(now) {
-    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    var dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now; // rAF time can trail a tap's performance.now()
     cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H);
     for (var i = parts.length - 1; i >= 0; i--) {
       var p = parts[i]; p.t += dt;
