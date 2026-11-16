@@ -137,7 +137,8 @@ export function initGenieSmoke(options) {
   }
 
   /* ---------- input: taps/clicks burst, swipes/drags trail (passive — never blocks scrolling) ---------- */
-  var down = false, lx = 0, ly = 0, lt = 0, travel = 0, lastTouch = 0;
+  var down = false, touching = false, lx = 0, ly = 0, lt = 0, travel = 0, lastTouch = 0;
+  var tx = -1, ty = -1, lastScrollY = window.scrollY, scrollAcc = 0;   // last finger point + scroll tracking (touch)
   function fromTouch() { return performance.now() - lastTouch < 900; } // ignore the fake mouse events phones send after a tap
   function ignored(e) { return CFG.ignore && e.target && e.target.closest && e.target.closest(CFG.ignore); }
   function start(x, y) { down = true; lx = x; ly = y; lt = performance.now(); travel = 0; }
@@ -146,21 +147,43 @@ export function initGenieSmoke(options) {
     var dx = x - lx, dy = y - ly, d = Math.hypot(dx, dy), now = performance.now(), dt = Math.max(16, now - lt) / 1000;
     if (d < 2) return;
     travel += d;
-    var steps = Math.min(4, Math.floor(d / CFG.trailEvery) + 1), vx = dx / dt * 0.12, vy = dy / dt * 0.12;
+    // a finger gets a denser, brighter, bigger trail than a mouse drag
+    var every = touching ? CFG.trailEvery * 0.55 : CFG.trailEvery, a = touching ? 0.95 : 0.6, sc = touching ? 1.25 : 1;
+    var steps = Math.min(touching ? 6 : 4, Math.floor(d / every) + 1), vx = dx / dt * 0.12, vy = dy / dt * 0.12;
     for (var i = 1; i <= steps; i++) {
       var f = i / steps;
-      puff(lx + dx * f + rnd(-10, 10), ly + dy * f + rnd(-10, 10), vx + rnd(-50, 50), vy + rnd(-50, 50), rnd(0.35, 0.75), 0.6);
+      puff(lx + dx * f + rnd(-10, 10), ly + dy * f + rnd(-10, 10), vx + rnd(-50, 50), vy + rnd(-50, 50), rnd(0.35, 0.75) * sc, a);
     }
-    if (Math.random() < 0.35) sparkle(x, y, Math.atan2(dy, dx) + Math.PI + rnd(-0.6, 0.6), rnd(60, 140));
+    if (Math.random() < (touching ? 0.6 : 0.35)) sparkle(x, y, Math.atan2(dy, dx) + Math.PI + rnd(-0.6, 0.6), rnd(60, 140));
     lx = x; ly = y; lt = now;
   }
-  function end(x, y, e) { if (!down) return; down = false; if (travel < 12 && !ignored(e)) burst(x, y); }
+  function end(x, y, e) { if (!down) return; down = false; if (travel < (touching ? 30 : 12) && !ignored(e)) burst(x, y); }
+
+  /* touch: instant puff the moment the finger lands, so every touch shows smoke */
+  function touchPuff(x, y) {
+    ring(x, y);
+    for (var i = 0; i < 6; i++) { var a = rnd(0, 6.28), sp = rnd(30, 110); puff(x + rnd(-6, 6), y + rnd(-6, 6), Math.cos(a) * sp, Math.sin(a) * sp - 30, rnd(0.4, 0.8), 0.9); }
+    for (var j = 0; j < 3; j++) sparkle(x, y, rnd(0, 6.28), rnd(80, 180));
+  }
+
+  /* scrolling (finger drag or momentum after release): smoke streams from where the finger last was */
+  function onScroll() {
+    var sy = window.scrollY, dy = sy - lastScrollY; lastScrollY = sy;
+    if (tx < 0 || performance.now() - lastTouch > 2500) return;          // only after a recent touch (phones/tablets)
+    scrollAcc += Math.abs(dy);
+    if (scrollAcc < 16) return;
+    var n = Math.min(3, Math.floor(scrollAcc / 16)); scrollAcc = 0;
+    var dir = dy > 0 ? -1 : 1;                                          // smoke trails behind the scroll direction
+    for (var i = 0; i < n; i++) puff(tx + rnd(-18, 18), ty + rnd(-18, 18), rnd(-40, 40), dir * rnd(40, 120), rnd(0.4, 0.8), touching ? 0.5 : 0.75);
+    if (Math.random() < 0.3) sparkle(tx, ty, rnd(0, 6.28), rnd(60, 140));
+  }
 
   var L = [
-    ['touchstart', function (e) { lastTouch = performance.now(); var t = e.touches[0]; if (t) start(t.clientX, t.clientY); }],
-    ['touchmove', function (e) { var t = e.touches[0]; if (t) move(t.clientX, t.clientY); }],
-    ['touchend', function (e) { lastTouch = performance.now(); var t = e.changedTouches[0]; if (t) end(t.clientX, t.clientY, e); }],
-    ['touchcancel', function () { down = false; }],
+    ['touchstart', function (e) { lastTouch = performance.now(); touching = true; var t = e.touches[0]; if (t) { tx = t.clientX; ty = t.clientY; start(t.clientX, t.clientY); if (!ignored(e)) touchPuff(t.clientX, t.clientY); } }],
+    ['touchmove', function (e) { lastTouch = performance.now(); var t = e.touches[0]; if (t) { tx = t.clientX; ty = t.clientY; move(t.clientX, t.clientY); } }],
+    ['touchend', function (e) { lastTouch = performance.now(); var t = e.changedTouches[0]; if (t) end(t.clientX, t.clientY, e); if (!e.touches.length) touching = false; }],
+    ['touchcancel', function () { down = false; touching = false; }],
+    ['scroll', onScroll],
     ['mousedown', function (e) { if (e.button === 0 && !fromTouch()) start(e.clientX, e.clientY); }],
     ['mousemove', function (e) { if (e.buttons & 1) move(e.clientX, e.clientY); }],
     ['mouseup', function (e) { if (e.button === 0 && !fromTouch()) end(e.clientX, e.clientY, e); }]

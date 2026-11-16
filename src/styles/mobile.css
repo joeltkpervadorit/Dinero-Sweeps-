@@ -7,13 +7,10 @@
 @keyframes qaShine{0%,70%{background-position:200% 0}100%{background-position:-80% 0}}
 @keyframes hotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 @keyframes ctaGlow{0%,100%{box-shadow:0 8px 22px rgba(254,73,243,.35),inset 0 1px 0 rgba(255,255,255,.45)}50%{box-shadow:0 8px 34px rgba(254,73,243,.75),0 0 0 4px rgba(254,73,243,.14),inset 0 1px 0 rgba(255,255,255,.45)}}
-@keyframes giftWiggle{0%,82%,100%{transform:rotate(0)}86%{transform:rotate(-12deg) scale(1.08)}90%{transform:rotate(10deg) scale(1.08)}94%{transform:rotate(-6deg)}}
 @keyframes twinkle{0%,100%{transform:rotate(0) scale(1);opacity:1}50%{transform:rotate(90deg) scale(.7);opacity:.6}}
 @keyframes cardShine{0%,78%{background-position:200% 0}100%{background-position:-60% 0}}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes spinSlow{to{transform:rotate(360deg)}}
-@keyframes hxGlow{0%,100%{box-shadow:0 12px 22px -10px rgba(254,73,243,.55),inset 0 1px 0 rgba(255,255,255,.45)}50%{box-shadow:0 14px 28px -8px rgba(254,73,243,.9),inset 0 1px 0 rgba(255,255,255,.45)}}
-@keyframes bnShine{0%,72%{transform:translateX(-120%)}100%{transform:translateX(220%)}}
 
 /* quick actions exist only on phones/tablets */
 .qa{display:none}
@@ -29,31 +26,6 @@
 .lnk{min-height:40px;padding:8px 0;font-size:13px}
 .btn{min-height:46px;padding:0 20px;font-size:13px}
 .btn.sm{min-height:38px;padding:0 14px;font-size:12px}
-
-/* ---- hero: everything above the fold ---- */
-.hx-art{height:clamp(170px,calc(100svh - 600px),74cqw)}
-.hx-c{margin-top:-14cqw;padding:0 16px 10px}
-.hx-t{font-size:clamp(46px,14.2cqw,64px);margin-top:8px;line-height:.88}
-.hx-s{margin-top:10px;font-size:13.5px;line-height:1.42}
-/* bonus ticket: sits above the CTA layer so the button glow can never cover it */
-.hx-bn{z-index:2;isolation:isolate;overflow:hidden;margin-top:14px;min-height:62px;padding:8px 10px 8px 8px;gap:12px;border-radius:18px;
-  background:linear-gradient(105deg,rgba(255,207,90,.2) 0%,rgba(255,207,90,.07) 45%,rgba(123,60,255,.16) 100%),#170d33;
-  box-shadow:inset 0 0 0 1.5px rgba(255,207,90,.55),0 10px 24px -8px rgba(0,0,0,.6)}
-.hx-bn::before{content:"";position:absolute;z-index:-1;left:58px;top:10px;bottom:10px;border-left:1.5px dashed rgba(255,207,90,.35)}
-.hx-bn::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(105deg,transparent,rgba(255,240,200,.18),transparent);animation:bnShine 5s ease-in-out infinite;pointer-events:none}
-.hx-bn img{width:44px;height:44px;margin-right:4px;animation:giftWiggle 3.6s ease-in-out infinite}
-.hx-bn>span:not(.hx-bg){min-width:0;padding-left:2px}
-.hx-bt{font-size:10px;letter-spacing:.18em}
-.hx-bv{margin-top:5px;font-size:clamp(19px,5.8cqw,23px);line-height:1.05;white-space:nowrap}
-.hx-bg{width:34px;height:34px;font-size:14px;box-shadow:0 4px 12px rgba(255,207,90,.4)}
-/* CTA row: own layer below the ticket, clear gap, glow only falls downward */
-.hx-cta{position:relative;z-index:1;margin-top:14px;gap:10px;grid-template-columns:1fr auto}
-.hx-cta .btn{min-height:50px}
-.hx-su{animation:hxGlow 2.2s ease-in-out infinite}
-.hx-li{padding:0 22px}
-.hx-18{margin-top:12px;gap:8px;font-size:10.5px;line-height:1.35;opacity:.85}
-.hx-18 img{width:20px;height:20px}
-.cn.k1{top:20cqw}.cn.k2{top:30cqw}.cn.k3{top:6cqw}
 
 /* ---- quick actions (PlayJuwa-style shortcuts) ---- */
 .qa{position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:4px 16px 14px}
@@ -77,10 +49,12 @@
 .wish-in{gap:14px}
 .wish-t{font-size:clamp(28px,8.6cqw,40px)}
 .wish-d{width:92px}
-/* original pinned scene, shorter scroll (was 165svh) */
-.mo .wish{height:125svh}
-.mo .wish-in{padding-top:40px}
-.mo .wish-h{bottom:18px}
+/* no full-screen pin on phones: the scene is only as tall as its content (no empty band above or below);
+   the sentence still fills in word by word as it passes through the viewport (see motion.js) */
+.mo .wish{height:auto;padding:34px 20px 22px}
+.mo .wish-in{position:relative;height:auto;padding-top:0;justify-content:flex-start}
+.mo .wish-d{width:110px;align-self:flex-end;margin:-6px 4% 0 0}
+.mo .wish-h{position:relative;bottom:auto;margin-top:-28px}
 
 /* ---- platforms: the original roll call, tighter rows (reading-line highlight kept) ---- */
 .plsec{padding-top:26px}

@@ -82,18 +82,29 @@ export function initMotion() {
       gsap.to('.atm .a1', { xPercent: 40, yPercent: 30, ease: 'none', scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
       gsap.to('.atm .a2', { xPercent: -45, yPercent: -35, ease: 'none', scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
 
-      /* ---- hero: lines rise on load, then the scene deepens as you leave ---- */
-      gsap.from('.hx-t .ln>i', { yPercent: 115, duration: 1.1, ease: 'power4.out', stagger: 0.09, delay: 0.15 });
-      // fromTo + clearProps: immune to a rebuild landing mid-tween and to the CSS transform transitions on .hx-bn/.btn
-      gsap.fromTo('.hx-c > .kick, .hx-s, .hx-bn, .hx-cta, .hx-18', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: E, stagger: 0.07, delay: 0.5, clearProps: 'transform,opacity' });
-      gsap.from('.hx-art img', { scale: 1.18, duration: 1.8, ease: 'power2.out' });
+      /* ---- hero (v7): the genie emerges from smoke, the headline rises line by line, CTAs land ---- */
+      var hin = gsap.timeline({ delay: 0.1 });
+      hin.from('.hx-img', { scale: 1.12, opacity: 0, filter: 'blur(10px)', duration: 1.6, ease: 'power2.out', clearProps: 'filter' })
+        .from('.hx-smk i', { opacity: 0, scale: 0.7, duration: 1.4, ease: 'power2.out', stagger: 0.12 }, 0)
+        .from('.hx-eb', { y: 16, opacity: 0, duration: 0.6, ease: E, clearProps: 'transform,opacity' }, 0.35)
+        .from('.hx-t .ln>i', { yPercent: 115, duration: 1.05, ease: 'power4.out', stagger: 0.1 }, 0.45)
+        .from('.hx-s', { y: 18, opacity: 0, duration: 0.7, ease: E, clearProps: 'transform,opacity' }, 0.85)
+        .from('.hx-cta .btn', { y: 26, scale: 0.94, opacity: 0, duration: 0.75, ease: 'back.out(1.7)', stagger: 0.08, clearProps: 'transform,opacity' }, 1.0)
+        .from('.hx-bn, .hx-18', { y: 20, opacity: 0, duration: 0.7, ease: E, stagger: 0.08, clearProps: 'transform,opacity' }, 1.15)
+        .from('.cn', { scale: 0, rotation: -60, opacity: 0, duration: 0.9, ease: 'back.out(2)', stagger: 0.12 }, 0.6);
+      /* idle life: the genie floats, coins bob, the smoke drifts (transforms only) */
+      gsap.to('.hx-art', { y: desk ? -14 : -8, duration: 3.6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      $('.cn').forEach(function (c, i) {
+        gsap.to(c, { y: -10 - i * 4, rotation: i % 2 ? 10 : -8, duration: 2.6 + i * 0.7, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.5 + i * 0.3 });
+      });
+      $('.hx-smk i').forEach(function (m, i) {
+        gsap.to(m, { xPercent: i % 2 ? -12 : 12, yPercent: i === 1 ? -10 : 8, scale: 1.12, duration: 7 + i * 2, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      });
+      /* subtle parallax while leaving the hero */
       var hs = { trigger: '.hx', start: 'top top', end: 'bottom top', scrub: true };
-      gsap.to('.hx-art img', { yPercent: 14, ease: 'none', scrollTrigger: hs });
-      gsap.to('.hx-t .ln:nth-child(1)>i', { xPercent: -7, ease: 'none', scrollTrigger: hs });
-      gsap.to('.hx-t .ln:nth-child(2)>i', { xPercent: 6, ease: 'none', scrollTrigger: hs });
-      gsap.to('.cn.k1', { y: -120, ease: 'none', scrollTrigger: hs });
-      gsap.to('.cn.k2', { y: -220, rotation: 40, ease: 'none', scrollTrigger: hs });
-      gsap.to('.cn.k3', { y: -70, ease: 'none', scrollTrigger: hs });
+      gsap.to('.hx-bg', { yPercent: desk ? 10 : 14, ease: 'none', scrollTrigger: hs });   // artwork drifts slower than the page
+      gsap.to('.hx-fx', { y: desk ? -160 : -110, ease: 'none', scrollTrigger: hs });     // coins drift faster (depth)
+      gsap.to('.hx-c', { y: desk ? -40 : -20, ease: 'none', scrollTrigger: hs });
 
       /* ---- ticker & follow marquee lean into the scroll ---- */
       gsap.to('.tick-in', { xPercent: -12, ease: 'none', scrollTrigger: { trigger: '.tick', start: 'top bottom', end: 'bottom top', scrub: 0.6 } });
@@ -103,7 +114,10 @@ export function initMotion() {
       $('.wish').forEach(function (w) {
         var words = $('.wd', w), num = $('.wish-n', w)[0], deco = $('.wish-d', w)[0];
         gsap.set(words, { opacity: 0.14 });
-        gsap.to(words, { opacity: 1, ease: 'none', stagger: 0.5, scrollTrigger: { trigger: w, start: 'top 30%', end: 'bottom 105%', scrub: 0.4 } });
+        // desktop: pinned scene, fill across the pin; phones: unpinned, fill while it crosses the viewport
+        gsap.to(words, { opacity: 1, ease: 'none', stagger: 0.5, scrollTrigger: desk
+          ? { trigger: w, start: 'top 30%', end: 'bottom 105%', scrub: 0.4 }
+          : { trigger: w, start: 'top 80%', end: 'bottom 60%', scrub: 0.4 } });
         gsap.fromTo(num, { yPercent: 12, rotation: -4 }, { yPercent: -18, rotation: 3, ease: 'none', scrollTrigger: { trigger: w, start: 'top bottom', end: 'bottom top', scrub: true } });
         gsap.fromTo(deco, { y: 60, rotation: -14, scale: 0.8 }, { y: -30, rotation: 10, scale: 1.08, ease: 'none', scrollTrigger: { trigger: w, start: 'top 60%', end: 'bottom bottom', scrub: 0.8 } });
         gsap.from($('.kick', w), { opacity: 0, x: -20, duration: 0.7, ease: E, scrollTrigger: { trigger: w, start: 'top 45%', toggleActions: 'play none none reverse' } });
