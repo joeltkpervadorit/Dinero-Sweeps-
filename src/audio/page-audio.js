@@ -366,6 +366,19 @@ export function createPageAudio() {
     }
   }
 
+  // Rub-the-lamp: a rising bell per rub step, then a magic arpeggio when the wish is granted.
+  function rubChime(e) {
+    if (!active()) return;
+    const lvl = (e && e.detail && e.detail.level) || 1;
+    bell(SCALE[Math.min(SCALE.length - 1, 6 + lvl)] * 2, ac.currentTime, 0.1, fx);
+  }
+  function wishChime() {
+    if (!active()) return;
+    const t = ac.currentTime;
+    for (let i = 0; i < 9; i++) bell(SCALE[Math.min(SCALE.length - 1, 4 + i)] * 2, t + i * 0.07, 0.12, fx);
+    [0, 4, 7].forEach((k) => bell(SCALE[Math.min(SCALE.length - 1, 6 + k)], t + 0.7, 0.14, fx));
+  }
+
   function onScroll() {
     if (!active()) { lastScrollY = window.scrollY; return; }
     const now = performance.now();
@@ -470,6 +483,8 @@ export function createPageAudio() {
   GESTURES.forEach((t) => window.addEventListener(t, onGesture, { passive: true, capture: true }));
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('ds:thunder', thunder);
+  window.addEventListener('ds:rub', rubChime);
+  window.addEventListener('ds:wish', wishChime);
   document.addEventListener('visibilitychange', onVisibility);
 
   return {
@@ -491,6 +506,8 @@ export function createPageAudio() {
       if (keepAlive) { keepAlive.pause(); URL.revokeObjectURL(keepAlive.src); keepAlive = null; }
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('ds:thunder', thunder);
+      window.removeEventListener('ds:rub', rubChime);
+      window.removeEventListener('ds:wish', wishChime);
       document.removeEventListener('visibilitychange', onVisibility);
       try { ac?.close(); } catch (e) { /* closed */ }
     },

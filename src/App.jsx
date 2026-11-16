@@ -25,9 +25,11 @@ import SiteFooter from './components/SiteFooter.jsx';
 import Mascot from './mascot/Mascot.jsx';
 import GenieSmoke from './effects/genie-smoke/react/GenieSmoke.jsx';
 import PageSound from './audio/PageSound.jsx';
+import Intro from './components/Intro.jsx';
+import { initCardTilt } from './effects/cardTilt.js';
 
 export default function App() {
-  useEffect(() => { initMotion(); }, []);
+  useEffect(() => { initMotion(); return initCardTilt(); }, []);
   return (
     <>
     <div className="ds">
@@ -62,6 +64,7 @@ export default function App() {
     <Mascot />
     <GenieSmoke />
     <PageSound />
+    <Intro />
     </>
   );
 }

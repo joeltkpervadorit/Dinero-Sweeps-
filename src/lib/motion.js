@@ -83,7 +83,7 @@ export function initMotion() {
       gsap.to('.atm .a2', { xPercent: -45, yPercent: -35, ease: 'none', scrollTrigger: { trigger: root, start: 'top top', end: 'bottom bottom', scrub: 1.2 } });
 
       /* ---- hero (v7): the genie emerges from smoke, the headline rises line by line, CTAs land ---- */
-      var hin = gsap.timeline({ delay: 0.1 });
+      var hin = gsap.timeline({ delay: document.querySelector('.intro') ? 1.75 : 0.1 }); // wait for the loading intro
       hin.from('.hx-img', { scale: 1.12, opacity: 0, filter: 'blur(10px)', duration: 1.6, ease: 'power2.out', clearProps: 'filter' })
         .from('.hx-smk i', { opacity: 0, scale: 0.7, duration: 1.4, ease: 'power2.out', stagger: 0.12 }, 0)
         .from('.hx-eb', { y: 16, opacity: 0, duration: 0.6, ease: E, clearProps: 'transform,opacity' }, 0.35)

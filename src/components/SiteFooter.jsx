@@ -1,3 +1,5 @@
+import RubLamp from './RubLamp.jsx';
+
 export default function SiteFooter() {
   return (
     <footer className="nf">
@@ -126,7 +128,7 @@ export default function SiteFooter() {
             </div>
           </nav>
         </div>
-        <div className="nf-sp" />
+        <div className="nf-sp"><RubLamp /></div>
         <div className="nf-bd"><img src="/media/badge-18plus.webp" alt="18+ Only" title="18+ Only" /><img src="/media/badge-shield.webp" alt="Security Shield" title="Security Shield" /><img src="/media/badge-verified.webp" alt="Verified Seal" title="Verified Seal" /><img src="/media/badge-secure-chip.webp" alt="Secure Chip" title="Secure Chip" /><img src="/media/badge-gc.webp" alt="Gold Coins (GC)" title="Gold Coins (GC)" /></div>
         <div className="nf-lg">
           <p>NO PURCHASE REQUIRED to participate in the sweepstakes. Sweepstakes are VOID WHERE PROHIBITED BY LAW. Please refer to the <a href="/faq">FAQ</a> and <a href="/promotions">promotions rules</a>. Players must be 18 or older.</p>

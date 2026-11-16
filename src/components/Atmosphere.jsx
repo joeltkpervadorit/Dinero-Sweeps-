@@ -26,6 +26,20 @@ function boltPaths(w, h) {
   return { paths, x0 };
 }
 
+// Random star field as one box-shadow list (cheap: one element per twinkle group).
+function starShadows(n) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const a = (0.4 + Math.random() * 0.6).toFixed(2);
+    out.push(`${rand(0, 100).toFixed(1)}vw ${rand(0, 70).toFixed(1)}vh 0 ${Math.random() < 0.15 ? 1 : 0}px rgba(255,255,255,${a})`);
+  }
+  return out.join(',');
+}
+const sky = (p) => {
+  const c = (v) => Math.min(1, Math.max(0, v));
+  return { dusk: c(1 - p / 0.3), storm: c(Math.min((p - 0.12) / 0.2, (0.85 - p) / 0.2)), night: c((p - 0.62) / 0.28) };
+};
+
 export default function Atmosphere() {
   const ref = useRef(null);
   const fxRef = useRef(null);
@@ -100,6 +114,17 @@ export default function Atmosphere() {
     });
     mo && mo.observe(root, { attributes: true, attributeFilter: ['data-world'] });
 
+    // Day → storm → night: sky layers follow how far down the page you are.
+    const paintSky = (y) => {
+      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const k = sky(y / max);
+      atm.style.setProperty('--dusk', k.dusk.toFixed(3));
+      atm.style.setProperty('--storm', k.storm.toFixed(3));
+      atm.style.setProperty('--night', k.night.toFixed(3));
+    };
+    atm.querySelectorAll('.atm-stars i').forEach((el, i) => { el.style.boxShadow = starShadows(i ? 40 : 70); });
+    paintSky(window.scrollY);
+
     // Fast scrolling → distant flicker; scroll also drifts the clouds.
     const onScroll = () => {
       if (raf) return;
@@ -109,6 +134,7 @@ export default function Atmosphere() {
         const v = Math.abs(y - lastY) / Math.max(16, now - lastT); // px per ms
         lastY = y; lastT = now;
         atm.style.setProperty('--sy', y);
+        paintSky(y);
         if (v > 1.6 && now - lastFlicker > 2200 && Math.random() < 0.5) {
           lastFlicker = now;
           flash.style.setProperty('--fx', `${rand(10, 90)}%`);
@@ -129,6 +155,7 @@ export default function Atmosphere() {
 
   return (
     <div className="atm" aria-hidden="true" ref={ref}>
+      <div className="atm-sky"><div className="dusk" /><div className="sun" /><div className="night" /><div className="atm-stars"><i /><i /></div><div className="moon" /></div>
       <i className="a1" /><i className="a2" />
       <div className="atm-clouds"><b className="k1" /><b className="k2" /><b className="k3" /><b className="k4" /></div>
       <div className="atm-flash" />

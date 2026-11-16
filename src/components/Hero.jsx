@@ -1,4 +1,5 @@
 import QuickActions from './QuickActions.jsx';
+import HeroCoins from '../effects/HeroCoins.jsx';
 
 export default function Hero() {
   return (
@@ -10,6 +11,7 @@ export default function Hero() {
           <div className="hx-smk"><i className="s1" /><i className="s2" /><i className="s3" /></div>
           <div className="hx-shade" />
         </div>
+        <HeroCoins />
         <div className="hx-fx" aria-hidden="true"><span className="cn k1"><img src="/media/prop-crown-coin.webp" alt="" /></span><span className="cn k2"><img src="/media/prop-crown-coin.webp" alt="" /></span><span className="cn k3"><img src="/media/prop-crown-coin.webp" alt="" /></span></div>
         <div className="hx-c">
           <h1 id="hx-h" className="sr">Dinero Sweeps — free sweepstakes casino games</h1>
