@@ -1,0 +1,9 @@
+/* Sound switch: a round button just left of the genie toggle (bottom right). */
+.ds-sound-toggle{position:fixed;right:72px;bottom:16px;z-index:46;display:grid;place-items:center;width:48px;height:48px;padding:0;border-radius:50%;cursor:pointer;
+  color:#ffd166;border:2px solid rgba(255,209,102,.85);background:radial-gradient(circle at 50% 35%,#4a1a7a,#1c0d3a);
+  box-shadow:0 8px 20px rgba(10,2,24,.5),0 0 14px rgba(254,73,243,.4);transition:translate .2s ease,box-shadow .2s ease,color .2s ease}
+.ds-sound-toggle[aria-pressed="false"]{color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.25);box-shadow:0 8px 20px rgba(10,2,24,.5)}
+.ds-sound-toggle:hover{translate:0 -2px;box-shadow:0 10px 24px rgba(10,2,24,.55),0 0 20px rgba(254,73,243,.6)}
+.ds-sound-toggle:focus-visible{outline:2px solid #ffd166;outline-offset:3px}
+@media (max-width:640px){.ds-sound-toggle{right:64px;bottom:12px;width:44px;height:44px}}
+@media (prefers-reduced-motion:reduce){.ds-sound-toggle{transition:none}.ds-sound-toggle:hover{translate:none}}

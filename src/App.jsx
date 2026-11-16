@@ -24,6 +24,7 @@ import Disclaimer from './components/Disclaimer.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
 import Mascot from './mascot/Mascot.jsx';
 import GenieSmoke from './effects/genie-smoke/react/GenieSmoke.jsx';
+import PageSound from './audio/PageSound.jsx';
 
 export default function App() {
   useEffect(() => { initMotion(); }, []);
@@ -60,6 +61,7 @@ export default function App() {
     </div>
     <Mascot />
     <GenieSmoke />
+    <PageSound />
     </>
   );
 }
