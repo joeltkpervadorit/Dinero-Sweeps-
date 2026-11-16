@@ -61,10 +61,10 @@
 .rl{padding:8px 16px;gap:2px 10px;grid-template-columns:26px 1fr auto}
 .rl::before{padding-top:7px;font-size:11px}
 .rl-m{min-height:40px;gap:10px}
-.rl-m img{width:28px;height:28px}
+.rl-m img{width:52px;height:44px;border-radius:9px}
 .rl-t{font-size:clamp(22px,6.4cqw,28px)}
 .rl-go{width:36px;height:36px;font-size:15px}
-.rl-l{padding-left:38px}
+.rl-l{padding-left:62px}
 .rl-l a{min-height:34px}
 .plf{padding-top:12px}
 .plsec .wrap[style]{padding-top:4px!important}
@@ -72,8 +72,6 @@
 /* ---- game lobby ---- */
 .gms{padding:26px 0 18px}
 .gms .sh{margin-bottom:10px}
-.gtabs{margin-bottom:10px}
-.gtabs label{min-height:32px;font-size:12px}
 .glg{gap:10px 8px}
 .ga::after{animation:cardShine 5s ease-in-out infinite}
 .gc-t:nth-child(3n+2) .ga::after{animation-delay:.5s}.gc-t:nth-child(3n) .ga::after{animation-delay:1s}

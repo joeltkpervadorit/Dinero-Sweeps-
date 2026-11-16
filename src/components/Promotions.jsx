@@ -3,7 +3,7 @@ export default function Promotions() {
     <section className="sec wrap" aria-label="Promotions" style={{"paddingTop": "24px"}}>
       <div className="pmg">
         <article className="pm pm1">
-          <div className="pm-art"><span className="art"><img src="/media/promo-rewards.webp" alt="Dino presenting a chest of rewards" loading="lazy" data-asset="promo-rewards" /></span></div>
+          <div className="pm-art"><span className="pm-tag"><i />New perks daily</span><span className="art"><img src="/media/promo-rewards.webp" alt="Dino presenting a chest of rewards" loading="lazy" data-asset="promo-rewards" /></span><img className="pm-cn c1" src="/media/prop-crown-coin.webp" alt="" aria-hidden="true" loading="lazy" /><img className="pm-cn c2" src="/media/prop-crown-coin.webp" alt="" aria-hidden="true" loading="lazy" /><img className="pm-cn c3" src="/media/prop-pink-gem.webp" alt="" aria-hidden="true" loading="lazy" /></div>
           <div className="pm-tx">
             <span className="kick">Rewards &amp; promotions</span>
             <h3 className="h3">Every visit comes with <em>something extra.</em></h3>
@@ -12,7 +12,7 @@ export default function Promotions() {
           </div>
         </article>
         <article className="pm pm2">
-          <div className="pm-art"><span className="art"><img src="/media/promo-tournament.webp" alt="Dino celebrating beside a golden tournament trophy" loading="lazy" data-asset="promo-tournament" /></span></div>
+          <div className="pm-art"><span className="pm-tag"><i />Live now</span><span className="art"><img src="/media/promo-tournament.webp" alt="Dino celebrating beside a golden tournament trophy" loading="lazy" data-asset="promo-tournament" /></span><img className="pm-cn c1" src="/media/prop-crown-coin.webp" alt="" aria-hidden="true" loading="lazy" /><img className="pm-cn c2" src="/media/prop-crown-coin.webp" alt="" aria-hidden="true" loading="lazy" /><img className="pm-cn c3" src="/media/prop-pink-gem.webp" alt="" aria-hidden="true" loading="lazy" /></div>
           <div className="pm-tx">
             <span className="kick">Tournaments</span>
             <h3 className="h3">Take a seat at the <em>big table.</em></h3>

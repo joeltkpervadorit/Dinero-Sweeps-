@@ -156,17 +156,11 @@ export function initMotion() {
       /* ---- quick actions (phones): pop in after the hero ---- */
       if (!desk) gsap.fromTo('.qa-b', { y: 24, scale: 0.85, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.8)', stagger: 0.07, delay: 0.85, clearProps: 'transform,opacity' });
 
-      /* ---- games: the lobby grid deals in row by row; tabs re-deal the visible cards ---- */
-      var glg = $('.glg')[0];
-      if (glg) {
-        gsap.fromTo($('.gc-t', glg), { y: 22, scale: 0.94, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: E, stagger: { each: 0.04, grid: 'auto', from: 'start' }, clearProps: 'transform,opacity', scrollTrigger: { trigger: glg, start: 'top 88%', once: true } });
-        var deal = function () {
-          var vis = $('.gc-t', glg).filter(function (c) { return c.offsetParent; });
-          gsap.fromTo(vis, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E, stagger: 0.03, clearProps: 'transform,opacity', overwrite: true });
-        };
-        $('.gt-i').forEach(function (r) { r.addEventListener('change', deal); });
-        cleanups.push(function () { $('.gt-i').forEach(function (r) { r.removeEventListener('change', deal); }); });
-      }
+      /* ---- games: each category grid deals in row by row as it scrolls into view ---- */
+      $('.glg').forEach(function (glg) {
+        var vis = $('.gc-t', glg).filter(function (c) { return c.offsetParent; });
+        gsap.fromTo(vis, { y: 22, scale: 0.94, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: E, stagger: { each: 0.04, grid: 'auto', from: 'start' }, clearProps: 'transform,opacity', scrollTrigger: { trigger: glg, start: 'top 88%', once: true } });
+      });
 
       /* ---- why: a deck that stacks (phones) / deals in (desktop) ---- */
       var cards = $('.wp');

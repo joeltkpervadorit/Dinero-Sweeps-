@@ -320,6 +320,52 @@ export function createPageAudio() {
     s.stop(t + 0.4);
   }
 
+  // Thunder for the lightning backdrop. Near: a loud crack, a deep boom and a long rolling rumble.
+  // Far (scroll flickers): a quiet, muffled roll.
+  function thunder(e) {
+    if (!active()) return;
+    const near = !e || !e.detail || e.detail.near !== false;
+    const t = ac.currentTime + (near ? 0.05 : 0.5);
+    const vol = near ? 1 : 0.28;
+    const len = near ? 5 : 2.6;
+    const noise = (start, dur, type, f0, f1, peak, attack) => {
+      const s = ac.createBufferSource();
+      s.buffer = noiseBuf;
+      s.loop = true;
+      s.playbackRate.value = 0.5 + Math.random() * 0.3;
+      const f = ac.createBiquadFilter();
+      f.type = type;
+      f.frequency.setValueAtTime(f0, start);
+      f.frequency.exponentialRampToValueAtTime(f1, start + dur);
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(peak, start + attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+      s.connect(f); f.connect(g); g.connect(out); g.connect(wet);
+      s.start(start); s.stop(start + dur + 0.1);
+    };
+    if (near) {
+      noise(t, 0.35, 'highpass', 2500, 600, 0.9 * vol, 0.005); // crack
+      // Sub boom you feel more than hear.
+      const o = ac.createOscillator();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(70, t);
+      o.frequency.exponentialRampToValueAtTime(32, t + 1.6);
+      const og = ac.createGain();
+      og.gain.setValueAtTime(0.0001, t);
+      og.gain.exponentialRampToValueAtTime(0.9, t + 0.04);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+      o.connect(og); og.connect(out);
+      o.start(t); o.stop(t + 1.9);
+    }
+    // Rolling rumble: a few overlapping swells.
+    const rolls = near ? 4 : 2;
+    for (let i = 0; i < rolls; i++) {
+      const st = t + (near ? 0.08 : 0) + i * (0.35 + Math.random() * 0.5);
+      noise(st, len - i * 0.6, 'lowpass', near ? 900 : 400, 60, (0.7 - i * 0.12) * vol, 0.08 + i * 0.1);
+    }
+  }
+
   function onScroll() {
     if (!active()) { lastScrollY = window.scrollY; return; }
     const now = performance.now();
@@ -423,6 +469,7 @@ export function createPageAudio() {
   window.addEventListener('pointerdown', onTap, { passive: true });
   GESTURES.forEach((t) => window.addEventListener(t, onGesture, { passive: true, capture: true }));
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('ds:thunder', thunder);
   document.addEventListener('visibilitychange', onVisibility);
 
   return {
@@ -443,6 +490,7 @@ export function createPageAudio() {
       GESTURES.forEach((t) => window.removeEventListener(t, onGesture, { capture: true }));
       if (keepAlive) { keepAlive.pause(); URL.revokeObjectURL(keepAlive.src); keepAlive = null; }
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('ds:thunder', thunder);
       document.removeEventListener('visibilitychange', onVisibility);
       try { ac?.close(); } catch (e) { /* closed */ }
     },
