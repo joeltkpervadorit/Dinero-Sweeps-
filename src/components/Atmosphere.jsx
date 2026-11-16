@@ -37,7 +37,7 @@ function starShadows(n) {
 }
 const sky = (p) => {
   const c = (v) => Math.min(1, Math.max(0, v));
-  return { dusk: c(1 - p / 0.3), storm: c(Math.min((p - 0.12) / 0.2, (0.85 - p) / 0.2)), night: c((p - 0.62) / 0.28) };
+  return { storm: c(Math.min((p - 0.12) / 0.2, (0.85 - p) / 0.2)), night: c((p - 0.62) / 0.28) };
 };
 
 export default function Atmosphere() {
@@ -118,7 +118,6 @@ export default function Atmosphere() {
     const paintSky = (y) => {
       const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const k = sky(y / max);
-      atm.style.setProperty('--dusk', k.dusk.toFixed(3));
       atm.style.setProperty('--storm', k.storm.toFixed(3));
       atm.style.setProperty('--night', k.night.toFixed(3));
     };
@@ -155,7 +154,7 @@ export default function Atmosphere() {
 
   return (
     <div className="atm" aria-hidden="true" ref={ref}>
-      <div className="atm-sky"><div className="dusk" /><div className="sun" /><div className="night" /><div className="atm-stars"><i /><i /></div><div className="moon" /></div>
+      <div className="atm-sky"><div className="night" /><div className="atm-stars"><i /><i /></div><div className="moon" /></div>
       <i className="a1" /><i className="a2" />
       <div className="atm-clouds"><b className="k1" /><b className="k2" /><b className="k3" /><b className="k4" /></div>
       <div className="atm-flash" />

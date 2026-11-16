@@ -58,32 +58,32 @@ export default function RubLamp() {
 
   return (
     <>
-      <div className={`rl-lamp${granted ? ' granted' : ''}`} style={{ '--p': power }}>
+      <div className={`lamp-wrap${granted ? ' granted' : ''}`} style={{ '--p': power }}>
         <button
           ref={lampRef}
           type="button"
-          className="rl-btn"
+          className="lamp-btn"
           aria-label={granted ? 'Show your granted wish' : 'Magic lamp — rub it to make a wish'}
           onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (granted) setOpen(true); else grant(); } }}
         >
           <img src="/media/prop-magic-lamp.webp" alt="" width="64" height="64" draggable="false" />
         </button>
-        <span className="rl-hint" aria-hidden="true">{granted ? 'Wish granted!' : 'Rub me…'}</span>
-        <span className="rl-puff" aria-hidden="true"><i /><i /><i /><i /></span>
+        <span className="lamp-hint" aria-hidden="true">{granted ? 'Wish granted!' : 'Rub me…'}</span>
+        <span className="lamp-puff" aria-hidden="true"><i /><i /><i /><i /></span>
       </div>
       {open && createPortal(
-        <div className="rl-ov" onClick={() => setOpen(false)}>
-          <div className="rl-card" role="dialog" aria-label="Your wish is granted" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="rl-x" aria-label="Close" onClick={() => setOpen(false)}>&times;</button>
-            <img className="rl-ci" src="/media/prop-magic-lamp.webp" alt="" width="84" height="84" />
-            <span className="rl-k">&#10022; You found the secret lamp</span>
-            <p className="rl-h">Your wish is <em>granted!</em></p>
-            <p className="rl-p">Use this code when you sign up for a little genie magic.</p>
-            <button type="button" className="rl-code" onClick={copy}>
+        <div className="lamp-ov" onClick={() => setOpen(false)}>
+          <div className="lamp-card" role="dialog" aria-label="Your wish is granted" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="lamp-x" aria-label="Close" onClick={() => setOpen(false)}>&times;</button>
+            <img className="lamp-ci" src="/media/prop-magic-lamp.webp" alt="" width="84" height="84" />
+            <span className="lamp-k">&#10022; You found the secret lamp</span>
+            <p className="lamp-h">Your wish is <em>granted!</em></p>
+            <p className="lamp-p">Use this code when you sign up for a little genie magic.</p>
+            <button type="button" className="lamp-code" onClick={copy}>
               <b>{BONUS_CODE}</b><span>{copied ? 'Copied!' : 'Tap to copy'}</span>
             </button>
-            <a className="rl-go" href="/signup">Claim my wish</a>
+            <a className="lamp-go" href="/signup">Claim my wish</a>
           </div>
         </div>,
         document.body,
