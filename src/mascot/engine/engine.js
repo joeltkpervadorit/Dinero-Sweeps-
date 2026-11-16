@@ -12,21 +12,34 @@ import { createRig, loadAtlas, poseReady, poseAtlas, coinImage, MUZZLE, CHEST } 
 import { createWorld, isInteractive } from './world.js';
 import { createEffects } from './effects.js';
 import { createSounds } from './sounds.js';
+import { gsap } from 'gsap';
 
 const Z_INDEX = 45; // above page content, below the sticky header (50), so the intro starts behind the logo
 const GRAVITY = 1500; // floatier than a person
 const LOGO = '.hd .logo';
 const DRAW_EVERY = 1 / 30;
 
-// Said once each, when the section is in the middle of the screen and he is not busy.
+// The tour: one plain-words explanation per section, said once each when the section reaches the middle of
+// the screen. The footer has no line here: Mascot.jsx shows the "switch me off" card there instead.
 const SECTIONS = [
-  { sel: '.top', t: 'Ready for an adventure?' },
-  { sel: '.gms', t: 'Look at these games!' },
-  { sel: '.pm1', t: 'Have you checked today’s rewards?' },
-  { sel: '.pm2', t: 'Think you can climb the ranks?' },
-  { sel: '.tcg', t: 'Let’s unlock something special!' },
-  { sel: '.nf', t: 'See you soon! Good luck out there!' },
+  { sel: '.hx', t: 'Welcome! Sign up here and grab your free welcome bonus.' },
+  { sel: '.w1', t: 'Everyone gets three wishes. Here’s wish number one!' },
+  { sel: '.plsec', t: 'Our platforms! Pick one and play right in your browser.' },
+  { sel: '.gms', t: 'Game lobby! Use the tabs to find slots, fish or table games.' },
+  { sel: '.w2', t: 'Wish number two! Keep scrolling, there’s more.' },
+  { sel: '.whys', t: 'Why play here? It’s free to play and full of perks.' },
+  { sel: '.pm1', t: 'Promotions! Daily rewards, spins and surprises live here.' },
+  { sel: '.pm2', t: 'Tournaments: play others and climb the leaderboard.' },
+  { sel: '.how', t: 'How to play: just three easy steps to get started.' },
+  { sel: '.pox', t: 'Three doors: welcome gift, daily bonus or tournaments. Pick one!' },
+  { sel: '.lbs', t: 'The leaderboard shows top players. Could you be next?' },
+  { sel: '.w3', t: 'Wish number three! We’re almost at the end.' },
+  { sel: '.tcg', t: 'Why trust us? Safe, secure, and help 24/7.' },
+  { sel: '.rvw', t: 'Real players, real reviews. See what they say!' },
+  { sel: '.faq', t: 'Got a question? Tap one and the answer opens.' },
+  { sel: '.fol', t: 'Follow us on social media for news and updates.' },
 ];
+const TOUR_GAP = 3500; // ms between two explanations, so each one can be read
 const LINES = {
   intro: ['Your wish is my command!', 'Hey there! I’m Dino!'],
   click: ['A little magic!', 'Coins for you!', 'Wish granted!', 'Ka-ching!'],
@@ -55,6 +68,21 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
   bubble.className = 'ds-genie-say';
   bubble.setAttribute('aria-hidden', 'true');
   bubble.style.zIndex = Z_INDEX + 1;
+  // The cloud is the supplied artwork (public/mascot/cloud.webp), left blank; the line sits on top of it in its
+  // own span. The engine moves the outer box; GSAP only animates the inner one (entrance and a slow float).
+  const bubbleIn = document.createElement('div');
+  bubbleIn.className = 'ds-genie-say-in';
+  const cloud = document.createElement('img');
+  cloud.className = 'ds-genie-say-cloud';
+  cloud.src = '/mascot/cloud.webp';
+  cloud.alt = '';
+  cloud.decoding = 'async';
+  const bubbleText = document.createElement('span');
+  bubbleText.className = 'ds-genie-say-tx';
+  bubbleIn.append(cloud, bubbleText);
+  bubble.appendChild(bubbleIn);
+  const cloudFloat = reducedMotion ? null
+    : gsap.to(bubbleIn, { y: -4, rotation: 0.6, duration: 1.9, ease: 'sine.inOut', yoyo: true, repeat: -1, paused: true });
 
   const world = createWorld({ perchSelector, ignore: root });
   const sfx = createSounds();
@@ -166,32 +194,59 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
     if (!text || hidden) return;
     const now = performance.now();
     lastQuip = now;
-    bubble.textContent = text;
+    bubbleText.textContent = text;
+    fitCloud();
     bubble.classList.add('on');
+    if (!reducedMotion) {
+      gsap.fromTo(bubbleIn, { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.6)', overwrite: 'auto' });
+      cloudFloat.play();
+    }
     bw = bubble.offsetWidth;
     bh = bubble.offsetHeight;
     lastBubble = '';
     sayUntil = now + sec * 1000;
-    talkUntil = now + Math.min(1700, 300 + text.length * 45);
+    talkUntil = now + Math.min(3500, 300 + text.length * 45);
     if (!reducedMotion && (me.mode === 'idle' || me.mode === 'look' || me.mode === 'rest')) pose('talk');
+  }
+
+  /** Keep the line to two rows inside the cloud body: widen the cloud (it keeps its 3:1 shape) until it fits,
+   * up to the viewport width. Without this a long line ran into the lamp and the rounded ends. */
+  function fitCloud() {
+    bubble.style.removeProperty('--w');
+    const maxW = document.documentElement.clientWidth - 16;
+    let w = bubble.offsetWidth;
+    if (w > maxW) { w = maxW; bubble.style.setProperty('--w', `${w}px`); }
+    const lh = parseFloat(getComputedStyle(bubbleText).lineHeight) || 17;
+    while (bubbleText.offsetHeight > lh * 2.2 && w < maxW) {
+      w = Math.min(maxW, w + 24);
+      bubble.style.setProperty('--w', `${w}px`);
+    }
   }
 
   function hush() {
     sayUntil = 0;
     bubble.classList.remove('on');
+    cloudFloat?.pause();
   }
 
-  /** A line for the section in the middle of the screen, once per section, not too often. */
+  /** Explain the section nearest the middle of the screen, once per section. Runs from housekeeping, so it
+   * works whatever he is doing; it waits while a line is still up or one was said a moment ago. */
   function sectionQuip() {
-    if (me.intro || performance.now() - lastQuip < 15000) return;
+    const now = performance.now();
+    if (me.intro || introPending || hidden || now < sayUntil || now - lastQuip < TOUR_GAP) return;
     const vh = window.innerHeight;
+    let best = null;
+    let bestD = Infinity;
     for (const s of SECTIONS) {
       if (seen.has(s.sel)) continue;
       const el = document.querySelector(s.sel);
       if (!el) continue;
       const r = el.getBoundingClientRect();
-      if (r.top < vh * 0.6 && r.bottom > vh * 0.4) { seen.add(s.sel); quip(s.t); return; }
+      if (r.top > vh * 0.65 || r.bottom < vh * 0.35) continue;
+      const d = Math.abs((r.top + r.bottom) / 2 - vh / 2);
+      if (d < bestD) { bestD = d; best = s; }
     }
+    if (best) { seen.add(best.sel); quip(best.t, clamp(best.t.length * 0.07, 3.2, 6)); }
   }
 
   /* ---------------- actions ---------------- */
@@ -389,7 +444,6 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
   /** Choose the next thing to do. Long idles keep him from pulling attention from the page. */
   function think() {
     if (reducedMotion) { setMode('idle', 1e9); return; }
-    sectionQuip();
     const r = Math.random();
     if (!me.perch) {
       if (r < 0.42 && me.floorTime <= 0 && goPerch()) return;
@@ -829,7 +883,7 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
     if (sayUntil) {
       const vw = document.documentElement.clientWidth;
       const bx = Math.round(clamp(me.x - bw / 2, 8, vw - bw - 8));
-      const by = Math.round(Math.max(world.topView + 6, ty + rig.ay - bodyH * 1.04 - bh));
+      const by = Math.round(Math.max(world.topView + 4, ty + rig.ay - bodyH * 1.04 - bh + 6)); // the cloud's tail points at his head
       const p = `translate3d(${bx}px,${by}px,0)`;
       if (p !== lastBubble) { lastBubble = p; bubble.style.transform = p; }
     }
@@ -909,6 +963,7 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
       start();
     }
     maybeStartIntro();
+    sectionQuip();
   }
 
   let introPending = false;
@@ -977,6 +1032,8 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
       fx.destroy();
       sfx.destroy();
       root.remove();
+      gsap.killTweensOf(bubbleIn);
+      cloudFloat?.kill();
       bubble.remove();
     },
   };
