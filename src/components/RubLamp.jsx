@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-/* Hidden magic lamp in the footer. Rub it (drag back and forth) and it glows brighter; rub enough and the
-   genie grants a wish: a smoke burst and a bonus-code popup. */
+/* Magic lamp in the centre of the footer. One tap (or a quick rub) grants a wish: the lamp shakes,
+   puffs smoke and opens a bonus-code popup. Rubbing makes it glow brighter first. */
 
 const BONUS_CODE = 'GENIEWISH'; // TODO: replace with the real promo code
 
@@ -25,17 +25,20 @@ export default function RubLamp() {
   }, [granted]);
 
   const grant = () => {
+    if (st.current.granted) return;
+    st.current.granted = true;
     setGranted(true);
     window.dispatchEvent(new CustomEvent('ds:wish'));
     setTimeout(() => setOpen(true), 650);
   };
 
   const onDown = (e) => {
-    if (granted) { setOpen(true); return; }
+    if (granted) return;
     const s = st.current;
     s.down = true; s.lastX = e.clientX; s.dir = 0;
-    lampRef.current.setPointerCapture?.(e.pointerId);
   };
+  // A tap anywhere on the lamp grants the wish (or reopens it).
+  const onTap = () => { if (st.current.granted) setOpen(true); else grant(); };
   const onMove = (e) => {
     const s = st.current;
     if (!s.down || granted) return;
@@ -44,11 +47,11 @@ export default function RubLamp() {
     const dir = Math.sign(dx);
     if (s.dir && dir !== s.dir) s.flips++;
     s.dir = dir; s.lastX = e.clientX;
-    s.power = Math.min(1, s.power + Math.abs(dx) / 1100);
+    s.power = Math.min(1, s.power + Math.abs(dx) / 450);
     setPower(s.power);
     const step = Math.floor(s.power * 6);
     if (step > s.step) { s.step = step; window.dispatchEvent(new CustomEvent('ds:rub', { detail: { level: step } })); }
-    if (s.power >= 1 && s.flips >= 5) grant();
+    if (s.power >= 1 && s.flips >= 2) grant();
   };
   const onUp = () => { st.current.down = false; st.current.step = Math.floor(st.current.power * 6); };
 
@@ -63,13 +66,14 @@ export default function RubLamp() {
           ref={lampRef}
           type="button"
           className="lamp-btn"
-          aria-label={granted ? 'Show your granted wish' : 'Magic lamp — rub it to make a wish'}
-          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (granted) setOpen(true); else grant(); } }}
+          aria-label={granted ? 'Show your granted wish' : 'Magic lamp — tap to make a wish'}
+          onClick={onTap}
+          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onPointerLeave={onUp}
         >
-          <img src="/media/prop-magic-lamp.webp" alt="" width="64" height="64" draggable="false" />
+          <span className="lamp-halo" aria-hidden="true" />
+          <img src="/media/prop-magic-lamp.webp" alt="" width="120" height="120" draggable="false" />
         </button>
-        <span className="lamp-hint" aria-hidden="true">{granted ? 'Wish granted!' : 'Rub me…'}</span>
+        <span className="lamp-hint" aria-hidden="true">Rub me…</span>
         <span className="lamp-puff" aria-hidden="true"><i /><i /><i /><i /></span>
       </div>
       {open && createPortal(
