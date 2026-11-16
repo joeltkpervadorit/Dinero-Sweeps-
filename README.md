@@ -27,7 +27,7 @@ src/lib/gsap-setup.js      Registers GSAP 3.12.5 + ScrollTrigger and exposes the
 src/lib/motion.js          Scroll choreography (initMotion) — unchanged logic from the prototype
 src/lib/idle.js            afterFirstPaint(): defers non-critical work (the mascot) until the page is idle
 src/mascot/                Dino the genie (lazy-loaded engine + toggle); see src/mascot/README.md
-public/mascot/             Genie atlases (core.webp, extra.webp) and toggle icon
+public/mascot/             Genie sprite (dino.webp) and toggle icon
 scripts/mascot/            Atlas builder (pack.py) and the genie's source layers
 src/styles/landing.css     Page styles. Mobile-first; desktop rules live in @container page (min-width:1000px)
 ```

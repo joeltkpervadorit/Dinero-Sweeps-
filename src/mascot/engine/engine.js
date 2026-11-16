@@ -54,7 +54,7 @@ const ease = (v, target, k) => v + (target - v) * Math.min(1, k);
 
 function targetHeight() {
   const w = document.documentElement.clientWidth;
-  return w >= 1024 ? 150 : w >= 640 ? 124 : 100;
+  return w >= 1024 ? 118 : w >= 640 ? 98 : 80;
 }
 
 export function createMascot({ perchSelector, reducedMotion = false, intro = false }) {
@@ -161,7 +161,7 @@ export function createMascot({ perchSelector, reducedMotion = false, intro = fal
   function resize() {
     world.measure();
     bodyH = targetHeight();
-    bodyW = bodyH * 0.55;
+    bodyW = bodyH * 0.8;
     rig.resize(bodyH);
     S = rig.S;
     root.style.transformOrigin = `${rig.ax}px ${rig.waistY}px`;

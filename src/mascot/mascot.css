@@ -1,6 +1,11 @@
 /* Genie layers never take pointer events; only the toggle is clickable. */
 .ds-genie{position:fixed;left:0;top:0;pointer-events:none;will-change:transform;contain:layout paint style}
-.ds-genie canvas{display:block}
+.ds-genie-rig{display:block}
+/* the sprite breathes and sways on its own; the engine adds head tilt (--rot) and tail lag (--skew) */
+.ds-genie-sprite{display:block;max-width:none;user-select:none;pointer-events:none;transform-origin:50% 88%;
+  transform:rotate(var(--rot,0deg)) skewX(var(--skew,0deg));animation:ds-genie-breathe 4.6s ease-in-out infinite}
+@keyframes ds-genie-breathe{0%,100%{scale:1 1;translate:0 0}50%{scale:1.012 1.02;translate:0 -.6%}}
+@media (prefers-reduced-motion:reduce){.ds-genie-sprite{animation:none}}
 .ds-genie-fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;display:none}
 
 /* Speech bubble: the supplied genie-cloud artwork (cloud.webp, 3:1, blank) with the line laid over its middle.
