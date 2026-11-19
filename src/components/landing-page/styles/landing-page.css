@@ -1,5 +1,6 @@
 /* Dinero Sweeps — "Three Wishes" landing page styles (mobile-first; desktop via @container page (min-width:1000px)) */
 /* ============ Dinero Sweeps — "Three Wishes" (v6) · mobile-first ============ */
+:root{--font-bricolage:"Bricolage Grotesque";--font-figtree:"Figtree";--font-instrument:"Instrument Serif";--font-montserrat:"Montserrat"}
 body{margin:0;background:#0d0820}
 .ds{container:page/inline-size;--night:#0d0820;--plum:#1b0f3a;--pink:#fe49f3;--pink2:#ff85f8;--mag:#b303a9;--vio:#7b3cff;--gold:#ffcf5a;--gold2:#f5a623;--cream:#fff4dc;--tx2:#c9bfe6;--bd:rgba(255,255,255,.09);
   --fd:var(--font-bricolage),"Arial Narrow",system-ui,sans-serif;--fs:var(--font-instrument),Georgia,serif;--fb:var(--font-figtree),system-ui,sans-serif;
