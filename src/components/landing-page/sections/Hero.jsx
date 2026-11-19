@@ -1,7 +1,5 @@
-import Image from 'next/image';
 import QuickActions from '@/components/landing-page/components/QuickActions.jsx';
 import HeroCoins from '@/components/landing-page/components/HeroCoins.jsx';
-import Link from 'next/link';
 
 export default function Hero() {
   return (
@@ -9,7 +7,7 @@ export default function Hero() {
       <input type="checkbox" id="wbx" className="tg" aria-label="Show welcome bonus" />
       <section className="hx" aria-labelledby="hx-h">
         <div className="hx-bg" aria-hidden="true">
-          <div className="hx-art"><Image className="hx-img" data-asset="hero-genie" src="/assets/hero-genie-1122.webp" alt="" fill sizes="(min-width: 1000px) 60vw, 100vw" priority /></div>
+          <div className="hx-art"><img className="hx-img" data-asset="hero-genie" src="/assets/hero-genie-1122.webp" alt="" /></div>
           <div className="hx-smk"><i className="s1" /><i className="s2" /><i className="s3" /></div>
           <div className="hx-shade" />
         </div>
@@ -21,8 +19,8 @@ export default function Hero() {
           <p className="hx-t" aria-hidden="true"><span className="ln"><i>Tonight,</i></span><span className="ln"><i>the fun</i></span><span className="ln"><i>is <em>YOURS.</em></i></span></p>
           <p className="hx-s">Explore the Dinero Sweeps game lobby. Game and platform details are coming soon.</p>
           <div className="hx-cta">
-          <Link className="btn hx-su" href="#lobby">Game lineup update <svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></Link>
-            <Link className="btn gh hx-li" href="#platforms">View platforms</Link>
+          <a className="btn hx-su" href="#lobby">Game lineup update <svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+            <a className="btn gh hx-li" href="#platforms">View platforms</a>
           </div>
           <label className="hx-bn" htmlFor="wbx"><img src="/assets/prop-gift-box.webp" alt="" width="52" height="52" /><span className="hx-bd" aria-hidden="true" /><span className="hx-bw"><span className="hx-bt">Welcome offer</span><span className="hx-bv">Details pending</span></span><span className="hx-bg2"><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></span></label>
           <p className="hx-18"><img src="/assets/badge-18plus.webp" alt="" /><span>18+ only. Participation and eligibility terms will be published when confirmed.</span></p>
@@ -39,7 +37,7 @@ export default function Hero() {
           <li><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check" /></svg> Offer details to be confirmed</li>
           <li><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check" /></svg> Terms to be confirmed</li>
         </ul>
-        <Link className="btn" href="#lobby">Browse games</Link>
+        <a className="btn" href="#lobby">Browse games</a>
       </div>
     </div>
   );

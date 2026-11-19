@@ -1,4 +1,3 @@
-import Link from 'next/link';
 
 /* Phone-only quick actions under the hero (PlayJuwa-style app shortcuts). Hidden on desktop. */
 const ITEMS = [
@@ -12,12 +11,12 @@ export default function QuickActions() {
   return (
     <nav className="qa" aria-label="Quick actions">
       {ITEMS.map((it, i) => (
-        <Link key={it.id} className="qa-b" href={it.href} style={{ '--q': i }}>
+        <a key={it.id} className="qa-b" href={it.href} style={{ '--q': i }}>
           {it.hot ? <span className="qa-hot">Hot</span> : null}
           <span className={'qa-ic' + (it.spin ? ' qa-spin' : '')}><img src={it.img} alt="" width="40" height="40" /></span>
           <b className="qa-t">{it.t}</b>
           <small className="qa-s">{it.s}</small>
-        </Link>
+        </a>
       ))}
     </nav>
   );

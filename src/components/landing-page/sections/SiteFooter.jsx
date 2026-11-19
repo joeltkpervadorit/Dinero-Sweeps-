@@ -1,6 +1,5 @@
 import SocialLinks from '@/components/landing-page/components/SocialLinks.jsx';
 import RubLamp from '@/components/landing-page/components/RubLamp.jsx';
-import Link from 'next/link';
 
 const platformLabels = Array.from({ length: 11 }, (_, index) => `Platform details pending ${index + 1}`);
 const pageLinks = [
@@ -27,30 +26,30 @@ export default function SiteFooter() {
         <div className="nf-gr">
           <div className="nf-card nf-lc">
             <img className="nf-mk" src="/assets/logo-mark.svg" alt="" />
-            <div><Link className="nf-wm" href="/" aria-label="Dinero Sweeps home"><span className="nf-d">DINERO</span><span className="nf-s">SWEEPS</span></Link><p className="nf-tg">Free Sweepstakes Casino</p></div>
+            <div><a className="nf-wm" href="/" aria-label="Dinero Sweeps home"><span className="nf-d">DINERO</span><span className="nf-s">SWEEPS</span></a><p className="nf-tg">Free Sweepstakes Casino</p></div>
           </div>
           <nav className="nf-card" aria-label="Platforms">
             <div className="nf-hd"><h3>Platforms</h3><Chevron className="nf-ch nf-chl" small={false} /></div>
-            <div className="nf-cols"><ul>{platformLabels.slice(0, 6).map((label) => <li key={label}><Link className="nf-a" href="#platforms"><span>{label}</span><Chevron /></Link></li>)}</ul><ul>{platformLabels.slice(6).concat(['All platform details pending']).map((label) => <li key={label}><Link className="nf-a" href="#platforms"><span>{label}</span><Chevron /></Link></li>)}</ul></div>
+            <div className="nf-cols"><ul>{platformLabels.slice(0, 6).map((label) => <li key={label}><a className="nf-a" href="#platforms"><span>{label}</span><Chevron /></a></li>)}</ul><ul>{platformLabels.slice(6).concat(['All platform details pending']).map((label) => <li key={label}><a className="nf-a" href="#platforms"><span>{label}</span><Chevron /></a></li>)}</ul></div>
           </nav>
           <nav className="nf-card" aria-label="Pages">
             <div className="nf-hd"><h3>Pages</h3><Chevron className="nf-ch nf-chl" small={false} /></div>
-            <div className="nf-cols"><ul>{pageLinks.slice(0, 5).map(([label, href]) => <li key={label}>{href ? <Link className="nf-a" href={href}><span>{label}</span><Chevron /></Link> : <span className="nf-a"><span>{label}</span></span>}</li>)}</ul><ul>{pageLinks.slice(5).map(([label, href]) => <li key={label}>{href ? <Link className="nf-a" href={href}><span>{label}</span><Chevron /></Link> : <span className="nf-a"><span>{label}</span></span>}</li>)}</ul></div>
+            <div className="nf-cols"><ul>{pageLinks.slice(0, 5).map(([label, href]) => <li key={label}>{href ? <a className="nf-a" href={href}><span>{label}</span><Chevron /></a> : <span className="nf-a"><span>{label}</span></span>}</li>)}</ul><ul>{pageLinks.slice(5).map(([label, href]) => <li key={label}>{href ? <a className="nf-a" href={href}><span>{label}</span><Chevron /></a> : <span className="nf-a"><span>{label}</span></span>}</li>)}</ul></div>
           </nav>
           <nav className="nf-card nf-cc" aria-label="Contact">
             <div className="nf-hd"><h3>Contact</h3><Chevron className="nf-ch nf-chl" small={false} /></div>
             <div className="nf-ct"><ul className="nf-cl">
               <li><span className="nf-ca"><img src="/assets/ui-mail-white.webp" alt="" /><span>Contact details pending confirmation</span></span></li>
-              <li><Link className="nf-ca" href="#faq"><img src="/assets/ui-headset-white.webp" alt="" /><span>Help center</span></Link></li>
+              <li><a className="nf-ca" href="#faq"><img src="/assets/ui-headset-white.webp" alt="" /><span>Help center</span></a></li>
               <li><span className="nf-ca"><img src="/assets/ui-chat-white.webp" alt="" /><span>Support options pending</span></span></li>
-              <li><Link className="nf-ca" href="#faq"><img src="/assets/ui-shield-white.webp" alt="" /><span>Responsible Gaming</span></Link></li>
+              <li><a className="nf-ca" href="#faq"><img src="/assets/ui-shield-white.webp" alt="" /><span>Responsible Gaming</span></a></li>
             </ul><SocialLinks className="nf-so" /></div>
           </nav>
         </div>
         <div className="nf-sp"><RubLamp /></div>
         <div className="nf-bd"><img src="/assets/badge-18plus.webp" alt="18+ Only" title="18+ Only" /><img src="/assets/badge-shield.webp" alt="Security" title="Security" /><img src="/assets/badge-secure-chip.webp" alt="Secure" title="Secure" /><img src="/assets/badge-gc.webp" alt="Gold Coins" title="Gold Coins" /></div>
         <div className="nf-lg">
-          <p>Eligibility, purchase, and promotion terms will be published once confirmed. Please refer to the <Link href="#faq">FAQ</Link> for current information. Intended for adults 18 and older.</p>
+          <p>Eligibility, purchase, and promotion terms will be published once confirmed. Please refer to the <a href="#faq">FAQ</a> for current information. Intended for adults 18 and older.</p>
           <p className="nf-cp">© 2026 Dinero Sweeps | All rights reserved.</p>
         </div>
       </div>

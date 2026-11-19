@@ -1,5 +1,3 @@
-'use client';
-
 import './mascot.css';
 /* Dino, the Dinero Sweeps genie: he floats around the landing page, rests on cards and fires finger-gun magic
  * (decorative crown coins) when clicked. On the first visit of a session he poofs out from behind the logo.

@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect } from 'react';
 import { initGenieSmoke } from './genie-smoke.js';
 

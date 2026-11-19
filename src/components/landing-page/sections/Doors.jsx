@@ -1,4 +1,3 @@
-import Link from 'next/link';
 
 export default function Doors() {
   return (
@@ -14,7 +13,7 @@ export default function Doors() {
             <span className="po-n">DOOR 01</span>
             <h3 className="h3">First time here?</h3>
             <p>Browse the landing page game presentation.</p>
-            <Link className="btn sm" href="#lobby">Explore games</Link>
+            <a className="btn sm" href="#lobby">Explore games</a>
           </div>
         </article>
         <article className="po">

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 
 const steps = [
   { image: 'how-to-play-step-01.webp', alt: 'Dino presenting golden welcome coins', title: 'Welcome information', details: ['Offer terms pending confirmation', 'Coin amounts pending confirmation', 'Purchase terms pending confirmation'] },
@@ -24,7 +23,7 @@ export default function HowToPlay() {
             <ul className="stu">
               {step.details.map((detail) => <li key={detail}><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check" /></svg> {detail}</li>)}
             </ul>
-            {index === 0 && <Link className="btn" href="#lobby">Browse game previews</Link>}
+            {index === 0 && <a className="btn" href="#lobby">Browse game previews</a>}
           </article>
         ))}
       </div>

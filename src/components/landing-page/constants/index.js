@@ -7,6 +7,6 @@ export const SOCIAL_LINKS = [
   { name: 'TikTok', label: 'TikTok', icon: '/assets/social-tiktok.webp', href: '' },
 ];
 
-/* Promo code shown by the secret lamp. Set NEXT_PUBLIC_LAMP_BONUS_CODE to a code the business actually honours;
+/* Promo code shown by the secret lamp. Set VITE_LAMP_BONUS_CODE to a code the business actually honours;
    it is public by design (it is displayed to visitors). When unset, the lamp does not show a code. */
-export const LAMP_BONUS_CODE = process.env.NEXT_PUBLIC_LAMP_BONUS_CODE || '';
+export const LAMP_BONUS_CODE = import.meta.env.VITE_LAMP_BONUS_CODE || '';

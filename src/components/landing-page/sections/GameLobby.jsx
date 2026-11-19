@@ -1,4 +1,3 @@
-import Link from 'next/link';
 
 const art = [
   '/assets/cash-machine-slot.webp', '/assets/golden-queen.webp', '/assets/blue-dragon-777.webp',
@@ -20,10 +19,10 @@ function Arrow() {
 
 function GameCard({ number, image }) {
   return (
-    <Link className="gc-t" href="#lobby" aria-label={`Game preview ${number}; title to be confirmed`}>
+    <a className="gc-t" href="#lobby" aria-label={`Game preview ${number}; title to be confirmed`}>
       <span className="ga"><img src={image} alt="" width="352" height="294" loading="lazy" decoding="async" /></span>
       <span className="gn">Game preview {number}</span>
-    </Link>
+    </a>
   );
 }
 

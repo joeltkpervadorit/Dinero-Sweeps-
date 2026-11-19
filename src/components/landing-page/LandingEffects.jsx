@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect } from 'react';
 import { initMotion } from '@/components/landing-page/lib/motion.js';
 import { initCardTilt } from '@/components/landing-page/lib/cardTilt.js';

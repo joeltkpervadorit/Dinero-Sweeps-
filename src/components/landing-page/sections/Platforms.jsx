@@ -1,4 +1,3 @@
-import Link from 'next/link';
 
 const previews = [
   ['blue-dragon-777.webp', '01'], ['cash-machine-slot.webp', '02'],
@@ -21,17 +20,17 @@ export default function Platforms() {
       <div className="roll">
         {previews.map(([image, number], index) => (
           <div className={`rl${index > 5 ? ' more' : ''}`} key={number}>
-            <Link className="rl-m" href="#lobby" aria-label={`View platform preview ${number}`}>
+            <a className="rl-m" href="#lobby" aria-label={`View platform preview ${number}`}>
               <img src={`/assets/${image}`} alt="" width="352" height="294" loading="lazy" decoding="async" />
               <span className="rl-t">Platform preview {number}</span>
-            </Link>
-            <span className="rl-a"><Link className="rl-go" href="#lobby" aria-label={`View platform preview ${number}`}><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></Link></span>
-            <span className="rl-l"><Link href="#lobby">View games</Link></span>
+            </a>
+            <span className="rl-a"><a className="rl-go" href="#lobby" aria-label={`View platform preview ${number}`}><svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></a></span>
+            <span className="rl-l"><a href="#lobby">View games</a></span>
           </div>
         ))}
       </div>
       <div className="wrap plf"><label className="btn gh" htmlFor="plm">Show all previews</label></div>
-      <div className="wrap" style={{ textAlign: 'center', paddingTop: '10px' }}><Link className="lnk" href="#lobby">View game previews <svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></Link></div>
+      <div className="wrap" style={{ textAlign: 'center', paddingTop: '10px' }}><a className="lnk" href="#lobby">View game previews <svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow" /></svg></a></div>
     </section>
   );
 }
