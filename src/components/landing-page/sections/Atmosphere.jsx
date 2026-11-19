@@ -1,6 +1,4 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 /* Storm backdrop: drifting clouds + lightning.
@@ -45,10 +43,8 @@ const sky = (p) => {
 export default function Atmosphere() {
   const ref = useRef(null);
   const fxRef = useRef(null);
-  // The full-screen strike layer is portalled into <body>, which only exists in the browser: render it after mount
-  // so the server markup and the first client render match.
-  const [portalHost, setPortalHost] = useState(null);
-  useEffect(() => setPortalHost(document.body), []);
+  // This is a Vite client-only app, so the full-screen strike layer can portal directly into <body>.
+  const portalHost = document.body;
 
   useEffect(() => {
     const atm = ref.current;

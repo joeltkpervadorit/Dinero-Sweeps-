@@ -1,8 +1,5 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Link from 'next/link';
 import { LAMP_BONUS_CODE } from '@/components/landing-page/constants';
 
 /* Magic lamp in the centre of the footer. Each tap shakes it harder and makes it glow brighter (with a
@@ -126,7 +123,7 @@ export default function RubLamp() {
             ) : (
               <p className="lamp-p">Thanks for finding the lamp. Offer details are not currently available.</p>
             )}
-            <Link className="lamp-go" href="#lobby">Browse games</Link>
+            <a className="lamp-go" href="#lobby">Browse games</a>
           </div>
         </div>,
         document.body,

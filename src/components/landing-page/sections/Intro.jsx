@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 
 /* Loading intro (~2s): the magic lamp shakes, smoke pours out, a gold flash, then the page is revealed
@@ -9,14 +7,13 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matc
 export const INTRO_MS = 1900; // when the reveal starts; motion.js starts the hero animation at this point
 
 export default function Intro() {
-  // Starts as 'in' on the server and the first client render; reduced-motion visitors skip it straight away.
-  const [phase, setPhase] = useState('in');
+  // Reduced-motion visitors skip the intro on the first client render.
+  const [phase, setPhase] = useState(() => reduced() ? 'done' : 'in');
 
   // Never leave the page scroll-locked if the component unmounts mid-intro (e.g. client-side navigation).
   useEffect(() => () => document.documentElement.classList.remove('intro-lock'), []);
 
   useEffect(() => {
-    if (phase === 'in' && reduced()) { setPhase('done'); return undefined; }
     if (phase === 'done') { document.documentElement.classList.remove('intro-lock'); return undefined; }
     document.documentElement.classList.add('intro-lock');
     if (phase === 'in') {

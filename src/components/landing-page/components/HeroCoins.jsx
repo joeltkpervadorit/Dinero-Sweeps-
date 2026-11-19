@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef } from 'react';
 
 /* Hero coins: gold coins and sparkles float up through the hero and scatter away from the cursor / finger.

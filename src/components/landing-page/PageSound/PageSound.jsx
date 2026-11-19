@@ -1,5 +1,3 @@
-'use client';
-
 import './PageSound.css';
 /* Sound switch for the page: genie background music, a chime on taps and a whoosh while scrolling
  * (see page-audio.js). Sound is on by default but, as browsers require, nothing plays until the visitor's first
