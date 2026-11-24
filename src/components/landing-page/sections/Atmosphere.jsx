@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 /* Storm backdrop: drifting clouds + lightning.
@@ -43,8 +43,11 @@ const sky = (p) => {
 export default function Atmosphere() {
   const ref = useRef(null);
   const fxRef = useRef(null);
-  // This is a Vite client-only app, so the full-screen strike layer can portal directly into <body>.
-  const portalHost = document.body;
+  const [portalHost, setPortalHost] = useState(null);
+
+  useEffect(() => {
+    setPortalHost(document.body);
+  }, []);
 
   useEffect(() => {
     const atm = ref.current;

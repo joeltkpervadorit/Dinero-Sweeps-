@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import SocialLinks from '@/components/landing-page/components/SocialLinks.jsx';
 import RubLamp from '@/components/landing-page/components/RubLamp.jsx';
 
@@ -26,7 +27,7 @@ export default function SiteFooter() {
         <div className="nf-gr">
           <div className="nf-card nf-lc">
             <img className="nf-mk" src="/assets/logo-mark.svg" alt="" />
-            <div><a className="nf-wm" href="/" aria-label="Dinero Sweeps home"><span className="nf-d">DINERO</span><span className="nf-s">SWEEPS</span></a><p className="nf-tg">Free Sweepstakes Casino</p></div>
+            <div><Link className="nf-wm" href="/" aria-label="Dinero Sweeps home"><span className="nf-d">DINERO</span><span className="nf-s">SWEEPS</span></Link><p className="nf-tg">Free Sweepstakes Casino</p></div>
           </div>
           <nav className="nf-card" aria-label="Platforms">
             <div className="nf-hd"><h3>Platforms</h3><Chevron className="nf-ch nf-chl" small={false} /></div>

@@ -1,3 +1,5 @@
+'use client';
+
 import '@/components/landing-page/styles/landing-page.css';
 import '@/components/landing-page/styles/landing-page-mobile.css';
 import '@/components/landing-page/styles/landing-page-extras.css';
