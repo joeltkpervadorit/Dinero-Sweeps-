@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 /* Loading intro (~2s): the magic lamp shakes, smoke pours out, a gold flash, then the page is revealed
    through a growing hole in the dark. Tap anywhere to skip. Skipped entirely for reduced motion. */
 
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const INTRO_MS = 1900; // when the reveal starts; motion.js starts the hero animation at this point
 
 export default function Intro() {
-  // Reduced-motion visitors skip the intro on the first client render.
-  const [phase, setPhase] = useState(() => reduced() ? 'done' : 'in');
+  const [phase, setPhase] = useState('in');
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setPhase('done');
+  }, []);
 
   // Never leave the page scroll-locked if the component unmounts mid-intro (e.g. client-side navigation).
   useEffect(() => () => document.documentElement.classList.remove('intro-lock'), []);
