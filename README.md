@@ -11,7 +11,7 @@ npm run build     # production build in .next/
 npm run start     # serve the production build
 ```
 
-Node.js 18.18 or newer.
+Node.js 20.9 or newer.
 
 ## Structure
 
